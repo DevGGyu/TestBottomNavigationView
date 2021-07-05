@@ -1,12 +1,12 @@
 package com.ggyu.testbottomnavigationview
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.airbnb.lottie.LottieCompositionFactory
@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity(),
         view
     }
 
+    private val mNavController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
+
     private var mPreClickPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,11 +61,10 @@ class MainActivity : AppCompatActivity(),
 
         mPreClickPosition = menu.getItem(0).itemId
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val appBarConfiguration = AppBarConfiguration(menu)
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        mNavView.setupWithNavController(navController)
+        setupActionBarWithNavController(mNavController, appBarConfiguration)
+        mNavView.setupWithNavController(mNavController)
 
         mNavView.setOnNavigationItemSelectedListener(this)
         mNavView.setOnNavigationItemReselectedListener(this)
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         handleNavigationItem(item)
-        return true
+        return NavigationUI.onNavDestinationSelected(item, mNavController)
     }
 
     // Optional
