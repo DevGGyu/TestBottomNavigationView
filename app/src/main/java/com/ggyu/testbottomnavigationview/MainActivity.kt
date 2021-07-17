@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(),
         E("heart-fill.json"),
     }
 
-    val list = arrayListOf(
+    private val list = arrayListOf(
         LottieAnimation.A,
         LottieAnimation.B,
         LottieAnimation.C,
@@ -36,45 +36,45 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
 
-    private val mNavView: BottomNavigationView by lazy {
+    private val navView: BottomNavigationView by lazy {
         val view = binding.navView
         view.inflateMenu(R.menu.bottom_nav_menu)
         view
     }
 
-    private val mNavController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
+    private val navController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
 
-    private var mPreClickPosition: Int = 0
+    private var preClickPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val menu = mNavView.menu
+        val menu = navView.menu
         menu.apply {
             (0 until menu.size()).forEach { i ->
                 val id = menu.getItem(i).itemId
-                this.findItem(id).icon = getLottieDrawable(list[i], mNavView)
+                this.findItem(id).icon = getLottieDrawable(list[i], navView)
             }
         }
 
-        mPreClickPosition = menu.getItem(0).itemId
+        preClickPosition = menu.getItem(0).itemId
 
         val appBarConfiguration = AppBarConfiguration(menu)
 
-        setupActionBarWithNavController(mNavController, appBarConfiguration)
-        mNavView.setupWithNavController(mNavController)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-        mNavView.setOnNavigationItemSelectedListener(this)
-        mNavView.setOnNavigationItemReselectedListener(this)
+        navView.setOnNavigationItemSelectedListener(this)
+        navView.setOnNavigationItemReselectedListener(this)
 
-        mNavView.selectedItemId = menu.getItem(0).itemId
+        navView.selectedItemId = menu.getItem(0).itemId
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         handleNavigationItem(item)
-        return NavigationUI.onNavDestinationSelected(item, mNavController)
+        return NavigationUI.onNavDestinationSelected(item, navController)
     }
 
     // Optional
@@ -84,18 +84,18 @@ class MainActivity : AppCompatActivity(),
 
     private fun handleNavigationItem(item: MenuItem) {
         handlePlayLottieAnimation(item)
-        mPreClickPosition = item.itemId
+        preClickPosition = item.itemId
     }
 
     private fun handlePlayLottieAnimation(item: MenuItem) {
         val icon = item.icon as? LottieDrawable
         icon?.apply { playAnimation() }
 
-        if (item.itemId != mPreClickPosition) {
-            val menu = mNavView.menu
-            val id = menu.findItem(mPreClickPosition).itemId
+        if (item.itemId != preClickPosition) {
+            val menu = navView.menu
+            val id = menu.findItem(preClickPosition).itemId
             val pos = (0 until menu.size()).indexOfFirst { index -> menu[index].itemId == id }
-            menu.findItem(mPreClickPosition).icon = getLottieDrawable(list[pos], mNavView)
+            menu.findItem(preClickPosition).icon = getLottieDrawable(list[pos], navView)
         }
     }
 
